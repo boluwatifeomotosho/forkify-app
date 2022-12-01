@@ -1,7 +1,7 @@
 import { async } from 'regenerator-runtime';
-import { API_URL, RES_PER_PAGE, KEY } from './config';
-// import { getJSON, sendJSON } from './helpers';
-import { AJAX } from './helpers';
+import { API_URL, RES_PER_PAGE, KEY } from './config.js';
+// import { getJSON, sendJSON } from './helpers.js';
+import { AJAX } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -45,9 +45,11 @@ export const loadRecipe = async function (id) {
     throw err;
   }
 };
+
 export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
+
     const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
     console.log(data);
 
@@ -114,9 +116,7 @@ const init = function () {
   const storage = localStorage.getItem('bookmarks');
   if (storage) state.bookmarks = JSON.parse(storage);
 };
-
 init();
-console.log(state.bookmarks);
 
 const clearBookmarks = function () {
   localStorage.clear('bookmarks');
@@ -132,10 +132,11 @@ export const uploadRecipe = async function (newRecipe) {
         // const ingArr = ing[1].replaceAll(' ', '').split(',');
         if (ingArr.length !== 3)
           throw new Error(
-            'Wrong inggredient format! Please use the correct format :)'
+            'Wrong ingredient fromat! Please use the correct format :)'
           );
 
         const [quantity, unit, description] = ingArr;
+
         return { quantity: quantity ? +quantity : null, unit, description };
       });
 
@@ -144,8 +145,8 @@ export const uploadRecipe = async function (newRecipe) {
       source_url: newRecipe.sourceUrl,
       image_url: newRecipe.image,
       publisher: newRecipe.publisher,
-      cooking_time: newRecipe.cookingTime,
-      servings: newRecipe.servings,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
       ingredients,
     };
 
